@@ -7,7 +7,7 @@ cleanupOutdatedCaches();
 self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open("static-cache").then((cache) => {
-            return cache.addAll(["/index.html", "/app.js", "/styles.css"]);
+            return cache.addAll(["/index.html"]);
         })
     );
 });
