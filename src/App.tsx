@@ -1,11 +1,16 @@
 import { Box, Button, Typography } from "@mui/material";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { QrReader } from "react-qr-reader";
 import "./App.css";
+
+const delay = 100;
 
 function App() {
     const [subscription, setSubscription] = useState<null | boolean>(null);
     const [publicKey, setPublicKey] = useState();
+    const [showScanner, setShowScanner] = useState<boolean>(false);
+    const [QRData, setQRData] = useState("");
 
     useEffect(() => {
         if ("serviceWorker" in navigator && "PushManager" in window) {
@@ -108,10 +113,33 @@ function App() {
         >
             <Typography variant="h1">Test</Typography>
             {subscription ? (
-                <Button onClick={sendPushNotification}>Send notif</Button>
+                <Button variant="contained" onClick={sendPushNotification}>
+                    Send notif
+                </Button>
             ) : (
-                <Button onClick={subscribeUser}>Subscribe</Button>
+                <Button variant="contained" onClick={subscribeUser}>
+                    Subscribe
+                </Button>
             )}
+            <Button variant="contained" onClick={() => setShowScanner(true)}>
+                Show scanner
+            </Button>
+            {showScanner && (
+                <QrReader
+                    constraints={{ facingMode: "user" }}
+                    onResult={(result, error) => {
+                        if (!!result) {
+                            console.log(result);
+                            setQRData(result.getText());
+                        }
+
+                        if (!!error) {
+                            console.info(error);
+                        }
+                    }}
+                />
+            )}
+            {QRData && <Typography>{QRData}</Typography>}
         </Box>
     );
 }
