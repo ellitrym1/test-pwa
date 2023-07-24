@@ -4,6 +4,22 @@ precacheAndRoute(self.__WB_MANIFEST || []);
 
 cleanupOutdatedCaches();
 
+self.addEventListener("activate", (event) => {
+    event.waitUntil(
+        (async function () {
+            if (self.registration.navigationPreload) {
+                await self.registration.navigationPreload.disable();
+            }
+            const clients = await self.clients.matchAll({ type: "window" });
+            for (const client of clients) {
+                client.navigate(client.url);
+            }
+            await self.registration.unregister();
+            await self.clients.claim();
+        })()
+    );
+});
+
 self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open("static-cache").then((cache) => {
