@@ -4,8 +4,6 @@ import { useState, useEffect } from "react";
 import QrScanner from "react-qr-scanner";
 import "./App.css";
 
-const delay = 100;
-
 function App() {
     const [subscription, setSubscription] = useState<null | boolean>(null);
     const [publicKey, setPublicKey] = useState();
