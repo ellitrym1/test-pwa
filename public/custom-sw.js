@@ -32,6 +32,15 @@ self.addEventListener("activate", (event) => {
     self.clients.claim();
 });
 
+self.addEventListener("fetch", (event) => {
+    console.log("Fetching:", event.request.url);
+    event.respondWith(
+        caches.match(event.request).then((response) => {
+            return response || fetch(event.request);
+        })
+    );
+});
+
 self.addEventListener("push", function (event) {
     if (!(self.Notification && self.Notification.permission === "granted")) {
         return;
