@@ -16,7 +16,7 @@ registerSW({
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker
-            .register("/assets/custom-sw.js")
+            .register("/custom-sw.js")
             .then((registration) => {
                 console.log("Service worker registered:", registration);
             })
