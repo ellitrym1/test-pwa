@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { QrReader } from "react-qr-reader";
+import QrScanner from "react-qr-scanner";
 import "./App.css";
 
 const delay = 100;
@@ -105,6 +105,12 @@ function App() {
         }
     };
 
+    const handleScan = (data: any) => {
+        if (data) {
+            setQRData(data);
+        }
+    };
+
     return (
         <Box
             sx={{
@@ -125,18 +131,10 @@ function App() {
                 Show scanner
             </Button>
             {showScanner && (
-                <QrReader
-                    constraints={{ facingMode: "user" }}
-                    onResult={(result, error) => {
-                        if (!!result) {
-                            console.log(result);
-                            setQRData(result.getText());
-                        }
-
-                        if (!!error) {
-                            console.info(error);
-                        }
-                    }}
+                <QrScanner
+                    onScan={handleScan}
+                    onError={(err: any) => console.error(err)}
+                    style={{ width: "100%" }}
                 />
             )}
             {QRData && <Typography>{QRData}</Typography>}
