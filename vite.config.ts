@@ -32,6 +32,7 @@ export default defineConfig({
             filename: "custom-sw.js",
             strategies: "injectManifest",
             workbox: {
+                skipWaiting: false,
                 globPatterns: ["**/*"],
             },
             manifest: {
