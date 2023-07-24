@@ -3,8 +3,6 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import "./App.css";
 
-const BASE_URL = "https://test-pwa-server.vercel.app/";
-
 function App() {
     const [subscription, setSubscription] = useState<null | boolean>(null);
     const [publicKey, setPublicKey] = useState();
