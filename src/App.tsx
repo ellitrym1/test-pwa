@@ -1,14 +1,16 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import QrScanner from "react-qr-scanner";
 import "./App.css";
+import ContactsList from "./components/ContactsList";
 
 function App() {
     const [subscription, setSubscription] = useState<null | boolean>(null);
     const [publicKey, setPublicKey] = useState();
     const [showScanner, setShowScanner] = useState<boolean>(false);
     const [QRData, setQRData] = useState("");
+    const [showContacts, setShowContacts] = useState<boolean>(false);
 
     useEffect(() => {
         if ("serviceWorker" in navigator && "PushManager" in window) {
@@ -110,36 +112,54 @@ function App() {
     };
 
     return (
-        <Box
+        <Stack
             sx={{
                 paddingTop: "0.5em",
             }}
         >
             <Typography variant="h1">Test</Typography>
-            {subscription ? (
-                <Button variant="contained" onClick={sendPushNotification}>
-                    Send notif
+            //SUBSCRIPTION AND NOTIFS
+            <Box>
+                {subscription ? (
+                    <Button variant="contained" onClick={sendPushNotification}>
+                        Send notif
+                    </Button>
+                ) : (
+                    <Button variant="contained" onClick={subscribeUser}>
+                        Subscribe
+                    </Button>
+                )}
+            </Box>
+            //QRSCANNER
+            <Box>
+                <Button
+                    variant="contained"
+                    onClick={() => setShowScanner(!showScanner)}
+                >
+                    {showScanner ? "Hide Scanner" : "Show Scanner"}
                 </Button>
-            ) : (
-                <Button variant="contained" onClick={subscribeUser}>
-                    Subscribe
+                {showScanner && (
+                    <QrScanner
+                        delay="100"
+                        facingMode={"rear"}
+                        onScan={handleScan}
+                        onError={(err: any) => console.error(err)}
+                        style={{ width: "100%" }}
+                    />
+                )}
+                {QRData && <Typography>{QRData}</Typography>}
+            </Box>
+            //PHONE CONTACTS
+            <Box>
+                <Button
+                    variant="contained"
+                    onClick={() => setShowContacts(!showContacts)}
+                >
+                    {showContacts ? "Hide Contacts" : "Show Contacts"}
                 </Button>
-            )}
-            <Button variant="contained" onClick={() => setShowScanner(true)}>
-                Show scanner
-            </Button>
-            {showScanner && (
-                <QrScanner
-                    delay="100"
-                    constraints={{ facingMode: "environment" }}
-                    facingMode={"environment"}
-                    onScan={handleScan}
-                    onError={(err: any) => console.error(err)}
-                    style={{ width: "100%" }}
-                />
-            )}
-            {QRData && <Typography>{QRData}</Typography>}
-        </Box>
+                {showContacts && <ContactsList />}
+            </Box>
+        </Stack>
     );
 }
 
