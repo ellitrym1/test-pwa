@@ -5,12 +5,24 @@ import { QrScanner } from "@yudiel/react-qr-scanner";
 import "./App.css";
 import ContactsList from "./components/ContactsList";
 
+interface LocationData {
+    latitude: number;
+    longitude: number;
+    accuracy: number;
+}
+
 function App() {
     const [subscription, setSubscription] = useState<null | boolean>(null);
     const [publicKey, setPublicKey] = useState();
     const [showScanner, setShowScanner] = useState<boolean>(false);
     const [QRData, setQRData] = useState("");
     const [showContacts, setShowContacts] = useState<boolean>(false);
+    const [showLocation, setShowLocation] = useState<boolean>(false);
+    const [locationData, setLocationData] = useState<LocationData>({
+        latitude: 0,
+        longitude: 0,
+        accuracy: 0,
+    });
 
     useEffect(() => {
         if ("serviceWorker" in navigator && "PushManager" in window) {
@@ -29,6 +41,19 @@ function App() {
                 });
         } else {
             console.log("Push notifications are not supported.");
+        }
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    const accuracy = position.coords.accuracy;
+                    setLocationData({ latitude, longitude, accuracy });
+                },
+                (err) => {
+                    console.error(err);
+                }
+            );
         }
         fetchApplicationServerKey();
     }, []);
@@ -111,6 +136,8 @@ function App() {
         }
     };
 
+    const currentLocation = (position: any) => {};
+
     return (
         <Stack
             sx={{
@@ -158,6 +185,14 @@ function App() {
                     {showContacts ? "Hide Contacts" : "Show Contacts"}
                 </Button>
                 {showContacts && <ContactsList />}
+            </Box>
+            //GEOLOCATION
+            <Box>
+                <Button
+                    variant="contained"
+                    onClick={() => setShowLocation(!showLocation)}
+                ></Button>
+                {showLocation && <>{locationData}</>}
             </Box>
         </Stack>
     );
