@@ -132,6 +132,7 @@ function App() {
                 <QrScanner
                     delay="100"
                     constraints={{ facingMode: "environment" }}
+                    facingMode={"environment"}
                     onScan={handleScan}
                     onError={(err: any) => console.error(err)}
                     style={{ width: "100%" }}
