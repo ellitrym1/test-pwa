@@ -1,7 +1,7 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import QrScanner from "react-qr-scanner";
+import { QrScanner } from "@yudiel/react-qr-scanner";
 import "./App.css";
 import ContactsList from "./components/ContactsList";
 
@@ -140,11 +140,11 @@ function App() {
                 </Button>
                 {showScanner && (
                     <QrScanner
-                        delay="100"
-                        facingMode={"rear"}
-                        onScan={handleScan}
+                        constraints={{ facingMode: "environment" }}
+                        onDecode={(result) => console.log(result)}
+                        onResult={handleScan}
                         onError={(err: any) => console.error(err)}
-                        style={{ width: "100%" }}
+                        containerStyle={{ width: "100%" }}
                     />
                 )}
                 {QRData && <Typography>{QRData}</Typography>}
